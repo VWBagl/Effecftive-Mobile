@@ -1,0 +1,71 @@
+Инструкция по тестированию API через Postman
+
+1. Запуск приложения
+   - Клонируйте репозиторий: git clone https://github.com/VWBagl/Effecftive-Mobile
+   - Перейдите в папку: cd Effective Mobile
+   - Запустите приложение: dotnet run
+   - Приложение запустится на портах: 
+      http://localhost:5000
+      https://localhost:7000
+
+2. Подготовка тестовых данных
+   - В корне проекта есть файл locations.txt, который содержит в себе тестовые данные из ТЗ
+   - Содержимое файла:
+     Яндекс.Директ:/ru
+     Ревдинский рабочий:/ru/svrd/revda,/ru/svrd/pervik
+     Газета уральских москвичей:/ru/msk,/ru/permobl,/ru/chelobl
+     Крутая реклама:/ru/svrd
+
+3. Настройка Postman
+   - Откройте Postman
+   - Создайте новую коллекцию: Collections -> + New Collection
+
+4. Запрос на загрузку данных (POST)
+   - Метод: POST
+   - URL: http://localhost:5000/api/AdPlat/upload
+   - Headers: Content-Type: application/json
+   - Body (raw JSON):
+     {
+         "filePath": "locations.txt"
+     }
+
+   Ожидаемый ответ:
+   {
+       "message": "File uploaded successfully"
+   }
+
+5. Запросы на поиск (GET)
+
+   Запрос 1: Поиск для /ru
+   - Метод: GET
+   - URL: http://localhost:5000/api/AdPlat/search?location=/ru
+   Ожидаемый ответ: {"platforms": ["Яндекс.Директ"]}
+
+   Запрос 2: Поиск для /ru/svrd
+   - Метод: GET
+   - URL: http://localhost:5000/api/AdPlat/search?location=/ru/svrd
+   Ожидаемый ответ: {"platforms": ["Яндекс.Директ", "Крутая реклама"]}
+
+   Запрос 3: Поиск для /ru/svrd/revda
+   - Метод: GET
+   - URL: http://localhost:5000/api/AdPlat/search?location=/ru/svrd/revda
+   Ожидаемый ответ: {"platforms": ["Яндекс.Директ", "Крутая реклама", "Ревдинский рабочий"]}
+
+   Запрос 4: Поиск для /ru/msk
+   - Метод: GET
+   - URL: http://localhost:5000/api/AdPlat/search?location=/ru/msk
+   Ожидаемый ответ: {"platforms": ["Яндекс.Директ", "Газета уральских москвичей"]}
+
+6. По вашему усмотрению можете добавить/изменить набор данных в файле локаций, сохраняя исходнуюю структуру:
+    Название: /локация 1, /локация 2, ... /локация n
+
+6. Последовательность проврки работоспособности
+   - Запустите приложение: dotnet run
+   - Выполните POST запрос для загрузки данных
+   - Выполните GET запросы для проверки поиска
+
+7. Ожидаемые результаты GET-запросов
+   /ru -> Яндекс.Директ
+   /ru/svrd -> Яндекс.Директ, Крутая реклама
+   /ru/svrd/revda -> Яндекс.Директ, Крутая реклама, Ревдинский рабочий
+   /ru/msk -> Яндекс.Директ, Газета уральских москвичей
